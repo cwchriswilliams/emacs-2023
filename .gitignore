@@ -1,0 +1,10 @@
+/.cache/
+/auto-save-list/
+/elpa/
+/eshell/
+/forge-database.sqlite
+/history
+/projects
+/transient/
+/straight/
+/tree-sitter/
