@@ -418,6 +418,17 @@ This is useful for tools like Vertico which sort based on this history
 
 #+END_SRC
 
+** IEdit Mode
+
+IEdit mode is for selecting a symbol/word and replacing it in a buffer
+
+#+begin_src emacs-lisp
+
+  (use-package iedit
+    :bind ("C-#" . iedit-mode))
+
+#+end_src
+
 
 * Org Mode
 

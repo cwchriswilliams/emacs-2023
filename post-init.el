@@ -162,6 +162,9 @@
 (use-package embark-consult
   :after (embark consult))
 
+(use-package iedit
+  :bind ("C-#" . iedit-mode))
+
 (use-package org
   :custom (org-ellipsis " ➤")
   (org-log-done 'time)
