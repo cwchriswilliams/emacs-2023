@@ -777,6 +777,23 @@ Snippets for clojure
 
 #+END_SRC
 
+*** Project.el Config
+
+Add detection for =deps.edn= as a project root file
+
+#+begin_src emacs-lisp
+  (cl-defmethod project-root ((project (head personal/clojure)))
+    (cdr project))
+
+  (defun personal/sub-projects-clojure (dir)
+    (if-let ((root (locate-dominating-file dir "deps.edn")))
+	(cons 'personal/clojure root)))
+
+  (add-hook 'project-find-functions #'project-try-vc 0)
+  (add-hook 'project-find-functions #'personal/sub-projects-clojure -40)
+
+#+end_src
+
 ** Common Lisp
 *** Sly
 

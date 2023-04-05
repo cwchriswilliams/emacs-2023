@@ -333,6 +333,16 @@
 (use-package clojure-snippets
   :after yasnippet clojure-mode)
 
+(cl-defmethod project-root ((project (head personal/clojure)))
+  (cdr project))
+
+(defun personal/sub-projects-clojure (dir)
+  (if-let ((root (locate-dominating-file dir "deps.edn")))
+      (cons 'personal/clojure root)))
+
+(add-hook 'project-find-functions #'project-try-vc 0)
+(add-hook 'project-find-functions #'personal/sub-projects-clojure -40)
+
 (use-package sly)
 
 (defun uuid-create ()
