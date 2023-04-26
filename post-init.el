@@ -373,6 +373,8 @@
   :custom
   (rfc-mode-directory (expand-file-name "~/.local/rfc")))
 
+(use-package adoc-mode)
+
 (general-def
   "M-Z" 'zap-up-to-char
   "M-i" 'imenu)

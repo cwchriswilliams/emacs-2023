@@ -880,6 +880,16 @@ Set up for reading epub files
 
 #+END_SRC
 
+** adoc-mode
+
+[[https://github.com/bbatsov/adoc-mode][adoc-mode]] allows reading and writing and highlighting for adoc files
+
+#+begin_src emacs-lisp
+
+  (use-package adoc-mode)
+
+#+end_src
+
 * Emacs Improvements
 
 - Add shortcut for zap-up-to-char similar to zap-to-char
