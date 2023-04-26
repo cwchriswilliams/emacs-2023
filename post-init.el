@@ -23,6 +23,8 @@
 (setq kept-old-versions 2)
 (setq version-control t)
 
+(setq xref-search-program #'ripgrep)
+
 (use-package emacs
   :custom
   (inhibit-startup-message t)
