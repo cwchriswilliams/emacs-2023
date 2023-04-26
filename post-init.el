@@ -205,7 +205,8 @@
   :config (yas-global-mode 1))
 
 (setq treesit-language-source-alist '((typescript . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "typescript/src"))
-				      (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))))
+				      (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))
+				      (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" nil "src"))))
 
 (use-package docker)
 
