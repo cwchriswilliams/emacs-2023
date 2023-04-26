@@ -65,6 +65,13 @@ Change the backup handling to write to a specific directory to stop polluting gi
 
 #+END_SRC
 
+** Ripgrep setup
+
+Use ripgrep instead of grep by default
+
+#+begin_src emacs-lisp
+  (setq xref-search-program #'ripgrep)
+#+end_src
 
 
 * Appearance
@@ -242,6 +249,15 @@ Magit is the main git client being used
     :config (magit-todos-mode t))
 
 #+END_SRC
+
+** Git Gutter
+
+Git gutter shows status of file in the fringe (left by default)
+
+#+begin_src emacs-lisp
+    (use-package git-gutter
+      :config (global-git-gutter-mode +1))
+#+end_src
 
 * Navigation and Movement
 
@@ -545,8 +561,9 @@ Add language sources
 
 #+begin_src emacs-lisp
 
-    (setq treesit-language-source-alist '((typescript . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "typescript/src"))
-					  (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))))
+      (setq treesit-language-source-alist '((typescript . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "typescript/src"))
+					    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))
+					    (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" nil "src"))))
 
 #+end_src
 
@@ -781,7 +798,7 @@ Snippets for clojure
 
 Add detection for =deps.edn= as a project root file
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (cl-defmethod project-root ((project (head personal/clojure)))
     (cdr project))
 
@@ -862,22 +879,6 @@ Set up for reading epub files
     (rfc-mode-directory (expand-file-name "~/.local/rfc")))
 
 #+END_SRC
-
-** AucTex
-
-For editing LaTeX files
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package tex
-    :straight auctex
-    :custom
-    (TeX-auto-save t
-		   TeX-parse-self t
-		   TeX-master nil))
-
-#+END_SRC
-
 
 * Emacs Improvements
 

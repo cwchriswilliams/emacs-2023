@@ -373,13 +373,6 @@
   :custom
   (rfc-mode-directory (expand-file-name "~/.local/rfc")))
 
-(use-package tex
-  :straight auctex
-  :custom
-  (TeX-auto-save t
-		 TeX-parse-self t
-		 TeX-master nil))
-
 (general-def
   "M-Z" 'zap-up-to-char
   "M-i" 'imenu)
