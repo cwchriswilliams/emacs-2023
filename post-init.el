@@ -389,3 +389,6 @@
 	       (dedicated . t)))
 
 (use-package restclient)
+
+(use-package terraform-mode
+:custom (terraform-indent-level 4))

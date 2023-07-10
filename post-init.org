@@ -929,3 +929,14 @@ Shell and repl windows appear at the bottom of the screen in a dedicated window 
   (use-package restclient)
 
 #+END_SRC
+
+* Add Terraform Package
+
+[[https://github.com/hcl-emacs/terraform-mode][Terraform-mode]] is a mode that supports terraform syntax
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package terraform-mode
+  :custom (terraform-indent-level 4))
+
+#+END_SRC
