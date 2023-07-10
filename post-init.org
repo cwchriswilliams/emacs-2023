@@ -919,3 +919,13 @@ Shell and repl windows appear at the bottom of the screen in a dedicated window 
 		 (dedicated . t)))
 
 #+end_src
+
+* Add REST Client
+
+[[https://github.com/pashky/restclient.el][restclient]] is a package that allows sending of REST requests in emacs in a way similar to Postman
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package restclient)
+
+#+END_SRC

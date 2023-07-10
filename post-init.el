@@ -387,3 +387,5 @@
 	       (window-height . 0.3)
 	       (window . root)
 	       (dedicated . t)))
+
+(use-package restclient)
