@@ -184,6 +184,17 @@
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
 
+(use-package ox-reveal)
+
+(use-package org-download
+  :after org
+  :hook (dired-mode . org-download-enable)
+  (org-mode . org-download-enable))
+
+(use-package org-inline-anim
+  :custom (org-inline-anim-loop t)
+  :hook (org-mode . org-inline-anim-mode))
+
 (use-package emacs
   :config
   (add-hook 'prog-mode-hook

@@ -484,6 +484,40 @@ More attractive org mode bullets to indicate header level
 
 #+END_SRC
 
+** Org Reveal
+
+For creating reveal.js presentations in org mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package ox-reveal)
+
+#+END_SRC
+
+** org-download
+
+[[https://github.com/abo-abo/org-download][org-download]] downloads images automatically from various sources including clipboard and screenshots:
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-download
+    :after org
+    :hook (dired-mode . org-download-enable)
+    (org-mode . org-download-enable))
+
+#+END_SRC
+
+** org-inline-anim
+
+[[https://github.com/shg/org-inline-anim.el][org-inline-anim]] animates inline images in org mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-inline-anim
+    :custom (org-inline-anim-loop t)
+    :hook (org-mode . org-inline-anim-mode))
+
+#+END_SRC
 
 * Programming
 ** General Programming Config
