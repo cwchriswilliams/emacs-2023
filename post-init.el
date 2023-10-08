@@ -506,3 +506,21 @@
 
 (use-package terraform-mode
 :custom (terraform-indent-level 4))
+
+(defun my/eshell-git-repo-status ()
+"Return a concise repo status string."
+(string-trim (shell-command-to-string
+  	      "git status --porcelain=v1 | awk 'BEGIN {staged=0; modified=0; untracked=0} /^M/ {modified++} /^M / {staged++} /^??/ {untracked++} END {sep=\"\"; if (staged > 0) {printf \"S\" staged; sep=\"|\"} if (modified > 0) {printf sep \"M\" modified; sep=\"|\"} if (untracked > 0) {printf sep \"U\" untracked} print \"\"}'"))
+)
+
+(defun my/eshell-git-prompt ()
+  "Return the current branch and status for the eshell prompt"
+  (let ((branch (magit-get-current-branch))
+      (status (my/eshell-git-repo-status)))
+  (when branch
+    (concat "|"
+            branch
+            (if (not (string-empty-p status)) (concat "[" status "]"))))))
+
+
+(setq eshell-prompt-function (lambda () (concat "[" user-login-name "@" (system-name) (my/eshell-git-prompt) "] " (eshell/pwd) " $ ")))
