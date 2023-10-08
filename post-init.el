@@ -352,6 +352,47 @@
 
 (use-package sly)
 
+(setq python-indent-offset 4)
+(setq python-shell-interpreter "python3")
+
+(use-package elpy
+:init
+(elpy-enable)
+:config
+(setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+(setq elpy-rpc-virtualenv-path 'current))
+
+(use-package pyvenv
+:after elpy
+:config
+(setenv "WORKON_HOME" (expand-file-name "~/.local/share/virtualenvs/")))
+
+(use-package blacken
+:hook (python-mode . blacken-mode))
+
+(setq flycheck-python-flake8-executable "/usr/bin/flake8")
+
+(use-package rust-mode
+:hook
+((rust-mode . (lambda () (setq indent-tabs-mode nil)))
+ (rust-mode . racer-mode)
+ (rust-mode . flycheck-rust-setup)))
+
+(use-package racer
+:after rust-mode
+:hook
+(racer-mode . eldoc-mode))
+
+(use-package flycheck-rust
+:after rust-mode
+:config
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+(use-package cargo
+:after rust-mode
+:hook
+(rust-mode . cargo-minor-mode))
+
 (defun uuid-create ()
 "Return a newly generated UUID. This uses a simple hashing of variable data."
 (let ((s (md5 (format "%s%s%s%s%s%s%s%s%s%s"
