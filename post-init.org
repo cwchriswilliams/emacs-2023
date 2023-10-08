@@ -392,7 +392,26 @@ This is useful for tools like Vertico which sort based on this history
 
 #+begin_src emacs-lisp
 
-    (use-package cape)
+    (personal/leader-key "<SPC> t" '("complete-tag" . complete-tag))
+    (use-package cape
+      :config
+      (personal/leader-key "<SPC> p" '("completion-at-point" . completion-at-point)) ;; capf
+      (personal/leader-key "<SPC> t" '("complete-tag" . complete-tag))        ;; etags
+      (personal/leader-key "<SPC> d" '("cape-dabbrev" . cape-dabbrev))        ;; or dabbrev-completion
+      (personal/leader-key "<SPC> h" '("cape-history" . cape-history))
+      (personal/leader-key "<SPC> f" '("cape-file" . cape-file))
+      (personal/leader-key "<SPC> k" '("cape-keyword" . cape-keyword))
+      (personal/leader-key "<SPC> s" '("cape-elisp-symbol" . cape-elisp-symbol))
+      (personal/leader-key "<SPC> e" '("cape-elisp-block" . cape-elisp-block))
+      (personal/leader-key "<SPC> a" '("cape-abbrev" . cape-abbrev))
+      (personal/leader-key "<SPC> l" '("cape-line" . cape-line))
+      (personal/leader-key "<SPC> w" '("cape-dict" . cape-dict))
+      (personal/leader-key "<SPC> :" '("cape-emoji" . cape-emoji))
+      (personal/leader-key "<SPC> \\" '("cape-tex" . cape-tex))
+      (personal/leader-key "<SPC> _" '("cape-tex" . cape-tex))
+      (personal/leader-key "<SPC> ^" '("cape-tex" . cape-tex))
+      (personal/leader-key "<SPC> &" '("cape-sgml" . cape-sgml))
+      (personal/leader-key "<SPC> r" '("cape-rfc1345" . cape-rfc1345)))
 
 #+end_src
 
