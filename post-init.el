@@ -393,6 +393,49 @@
 :hook
 (rust-mode . cargo-minor-mode))
 
+(use-package web-mode
+:straight t
+:mode (("\\.html?\\'" . web-mode)
+       ("\\.css\\'" . web-mode)
+       ("\\.js\\'" . web-mode))
+:config
+(setq web-mode-content-types-alist
+      '(("jsx" . "\\.js[x]?\\'")))
+(setq web-mode-enable-auto-closing t)
+(setq web-mode-enable-auto-quoting t))
+
+(use-package emmet-mode
+:straight t
+:hook (web-mode css-mode sgml-mode))
+
+(use-package rainbow-mode
+:straight t
+:hook (web-mode css-mode))
+
+(use-package js2-mode
+  :straight t
+  :mode "\\.js\\'")
+
+(use-package tide
+  :straight t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+
+(use-package prettier-js
+  :straight t
+  :hook ((web-mode js2-mode typescript-mode) . prettier-js-mode))
+
+(with-eval-after-load 'flycheck
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-mode 'javascript-eslint 'js2-mode)
+  (setq flycheck-javascript-eslint-executable "/usr/bin/eslint"))
+
+(use-package indium
+:straight t
+:hook (js2-mode . indium-interaction-mode))
+
 (defun uuid-create ()
 "Return a newly generated UUID. This uses a simple hashing of variable data."
 (let ((s (md5 (format "%s%s%s%s%s%s%s%s%s%s"
