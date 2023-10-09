@@ -522,5 +522,23 @@
             branch
             (if (not (string-empty-p status)) (concat "[" status "]"))))))
 
+(defun my/eshell-prompt ()
+  "Return the full eshell prompt string"
+  (concat "[" user-login-name "@" (system-name) (my/eshell-git-prompt) "] " (eshell/pwd) " $ "))
 
-(setq eshell-prompt-function (lambda () (concat "[" user-login-name "@" (system-name) (my/eshell-git-prompt) "] " (eshell/pwd) " $ ")))
+(setq eshell-prompt-function 'my/eshell-prompt)
+
+(defun my-read-only-eshell-prompt ()
+  (let ((prompt (my/eshell-prompt)))
+    (add-text-properties 0 (length prompt) '(read-only t) prompt)
+    prompt))
+
+  (setq eshell-prompt-function 'my-read-only-eshell-prompt)
+
+  (defun my-read-only-eshell-output ()
+    (let ((inhibit-read-only t)
+  	  (beg (eshell-beginning-of-output))
+  	  (end (eshell-end-of-output)))
+      (put-text-property beg end 'read-only t)))
+
+  (add-hook 'eshell-output-filter-functions 'my-read-only-eshell-output)
