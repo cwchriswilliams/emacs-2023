@@ -587,7 +587,9 @@ Use paredit to ensure that parens cannot be unmatched
 #+BEGIN_SRC emacs-lisp
 
   (use-package paredit
-   :hook (prog-mode . enable-paredit-mode))
+   :hook (clojure-mode . enable-paredit-mode)
+   (emacs-lisp-mode . enable-paredit-mode)
+   (lisp-mode . enable-paredit-mode))
 
 #+END_SRC
 

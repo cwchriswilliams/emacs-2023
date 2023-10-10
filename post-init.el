@@ -229,7 +229,9 @@
  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package paredit
- :hook (prog-mode . enable-paredit-mode))
+ :hook (clojure-mode . enable-paredit-mode)
+ (emacs-lisp-mode . enable-paredit-mode)
+ (lisp-mode . enable-paredit-mode))
 
 (use-package yasnippet
   :config (yas-global-mode 1))
