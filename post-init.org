@@ -1242,7 +1242,38 @@ Make Eshell Readonly except where a traditional shell would allow editing
   	    (end (eshell-end-of-output)))
         (put-text-property beg end 'read-only t)))
 
-    (add-hook 'eshell-output-filter-functions 'my-read-only-eshell-output)
+;    (add-hook 'eshell-output-filter-functions 'my-read-only-eshell-output)
+
+
+#+END_SRC
+
+** EShell Colour
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package xterm-color
+    :ensure t
+    :after eshell-mode
+    :config
+    ;; This will set `xterm-color-filter' as the filter for comint processes. This includes eshell,
+    ;; but also other modes like shell-mode or compilation-mode.
+    (setq comint-output-filter-functions
+          (remove 'ansi-color-process-output comint-output-filter-functions))
+
+    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+
+    ;; For eshell specifically
+    (setq eshell-output-filter-functions
+          (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+
+    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+    )
+
+    (add-hook 'eshell-before-prompt-hook
+              (lambda ()
+              (setq xterm-color-preserve-properties t)
+  	    (setenv "TERM" "xterm-256color")))
+
 
 
 #+END_SRC

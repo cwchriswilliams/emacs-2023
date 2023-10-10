@@ -531,16 +531,39 @@
 (setq eshell-prompt-function 'my/eshell-prompt)
 
 (defun my-read-only-eshell-prompt ()
-  (let ((prompt (my/eshell-prompt)))
-    (add-text-properties 0 (length prompt) '(read-only t) prompt)
-    prompt))
+    (let ((prompt (my/eshell-prompt)))
+      (add-text-properties 0 (length prompt) '(read-only t) prompt)
+      prompt))
 
-  (setq eshell-prompt-function 'my-read-only-eshell-prompt)
+    (setq eshell-prompt-function 'my-read-only-eshell-prompt)
 
-  (defun my-read-only-eshell-output ()
-    (let ((inhibit-read-only t)
-  	  (beg (eshell-beginning-of-output))
-  	  (end (eshell-end-of-output)))
-      (put-text-property beg end 'read-only t)))
+    (defun my-read-only-eshell-output ()
+      (let ((inhibit-read-only t)
+  	    (beg (eshell-beginning-of-output))
+  	    (end (eshell-end-of-output)))
+        (put-text-property beg end 'read-only t)))
 
-  (add-hook 'eshell-output-filter-functions 'my-read-only-eshell-output)
+;    (add-hook 'eshell-output-filter-functions 'my-read-only-eshell-output)
+
+(use-package xterm-color
+:ensure t
+:after eshell-mode
+:config
+;; This will set `xterm-color-filter' as the filter for comint processes. This includes eshell,
+;; but also other modes like shell-mode or compilation-mode.
+(setq comint-output-filter-functions
+      (remove 'ansi-color-process-output comint-output-filter-functions))
+
+(add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+
+;; For eshell specifically
+(setq eshell-output-filter-functions
+      (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+
+(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+)
+
+(add-hook 'eshell-before-prompt-hook
+          (lambda ()
+          (setq xterm-color-preserve-properties t)
+  	(setenv "TERM" "xterm-256color")))
