@@ -1286,3 +1286,12 @@ Make Eshell Readonly except where a traditional shell would allow editing
 
 
 #+END_SRC
+* Emoji setup
+
+#+BEGIN_SRC emacs-lisp
+
+  (when (member "Noto Color Emoji" (font-family-list))
+  (set-fontset-font
+    t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+#+END_SRC

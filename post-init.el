@@ -570,3 +570,6 @@
           (lambda ()
           (setq xterm-color-preserve-properties t)
   	(setenv "TERM" "xterm-256color")))
+(when (member "Noto Color Emoji" (font-family-list))
+(set-fontset-font
+  t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
