@@ -538,6 +538,15 @@ For creating reveal.js presentations in org mode
 
 #+END_SRC
 
+** Org-Roam
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-roam
+    :config (org-roam-db-autosync-mode))
+
+#+END_SRC
+
 * Programming
 ** General Programming Config
 

@@ -214,6 +214,9 @@
   :custom (org-inline-anim-loop t)
   :hook (org-mode . org-inline-anim-mode))
 
+(use-package org-roam
+  :config (org-roam-db-autosync-mode))
+
 (use-package emacs
   :config
   (add-hook 'prog-mode-hook
