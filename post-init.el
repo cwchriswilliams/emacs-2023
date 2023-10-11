@@ -570,6 +570,15 @@
           (lambda ()
           (setq xterm-color-preserve-properties t)
   	(setenv "TERM" "xterm-256color")))
+
+(defun my/hiragana-conversion ()
+(interactive)
+(let* ((word (if (use-region-p)
+                 (buffer-substring-no-properties (region-beginning) (region-end))
+               (thing-at-point 'word t)))
+       (hiragana (shell-command-to-string (format "echo \"%s\" | kakasi -i \"utf-8\" -f -JH -KH" word))))
+  (message "Hiragana: %s" hiragana)))
+
 (when (member "Noto Color Emoji" (font-family-list))
 (set-fontset-font
   t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
