@@ -197,7 +197,11 @@
   :custom (org-ellipsis " ➤")
   (org-log-done 'time)
   (org-agenda-start-with-log-mode t)
-  (org-duration-format (quote h:mm)))
+  (org-duration-format (quote h:mm))
+  (custom-set-faces
+   '(org-level-1 ((t (:height 1.5))))
+   '(org-level-2 ((t (:height 1.4))))
+   '(org-level-3 ((t (:height 1.3))))))
 
 (use-package org-bullets
 :after org
