@@ -6,6 +6,16 @@
 
   This file will generate a post-init.el file. This should be loaded from init.el with ~(load-file "path-to-post-init.el")~
 
+* Lexical Binding
+
+Feeling brave so attempting to see if this breaks my entire config.
+
+#+BEGIN_SRC emacs-lisp
+
+;; -*- lexical-binding: t -*-
+
+  #+END_SRC
+
 * Package Setup
 ** Straight Package Setup
 
@@ -126,6 +136,16 @@ Use ripgrep instead of grep by default
     (set-face-attribute 'default nil :font "Source Code Pro" :height 140))
 
 #+end_src
+
+** ef-themes
+
+Install ef-themes in case I get bored
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package ef-themes)
+
+#+END_SRC
 
 ** Modeline setup
 
@@ -1310,5 +1330,63 @@ Hiragana for marked region (requires kakasi installed)
   (when (member "Noto Color Emoji" (font-family-list))
   (set-fontset-font
     t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+#+END_SRC
+
+* RSS
+
+** Elfeed
+
+RSS setup with Elfeed
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elfeed)
+
+#+END_SRC
+
+*** Elfeed-org
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package elfeed-org
+      :config (elfeed-org)
+        (setq rmh-elfeed-org-files (list (expand-file-name "~/.config/emacs/elfeed.org"))))
+
+#+END_SRC
+
+* Eww Readable
+
+Based on code from https://emacs.stackexchange.com/a/36287
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/get-selected-region-or-prompt ()
+  "Get the selected region's content or prompt the user if no region is selected."
+  (if (use-region-p)
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (read-string "URL: ")))
+
+  (defun my/eww-open-readable ()
+  "Open URL in readable mode."
+  (interactive)
+  (letrec ((nonce (lambda ()
+                    (unwind-protect
+                        (eww-readable)
+                      (remove-hook 'eww-after-render-hook nonce)))))
+    (add-hook 'eww-after-render-hook nonce))
+  (let ((selected-url (my/get-selected-region-or-prompt)))
+    (eww selected-url)))
+
+#+END_SRC
+
+* Breadcrumb
+
+Enable Breadcrumbs globally until I have time to be a little more custom
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package breadcrumb
+      :config (breadcrumb-mode))
 
 #+END_SRC

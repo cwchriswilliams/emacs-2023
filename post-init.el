@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -51,6 +53,8 @@
 (use-package emacs
   :config
   (set-face-attribute 'default nil :font "Source Code Pro" :height 140))
+
+(use-package ef-themes)
 
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -582,3 +586,29 @@
 (when (member "Noto Color Emoji" (font-family-list))
 (set-fontset-font
   t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+(use-package elfeed)
+
+(use-package elfeed-org
+  :config (elfeed-org)
+    (setq rmh-elfeed-org-files (list (expand-file-name "~/.config/emacs/elfeed.org"))))
+
+(defun my/get-selected-region-or-prompt ()
+"Get the selected region's content or prompt the user if no region is selected."
+(if (use-region-p)
+    (buffer-substring-no-properties (region-beginning) (region-end))
+  (read-string "URL: ")))
+
+(defun my/eww-open-readable ()
+"Open URL in readable mode."
+(interactive)
+(letrec ((nonce (lambda ()
+                  (unwind-protect
+                      (eww-readable)
+                    (remove-hook 'eww-after-render-hook nonce)))))
+  (add-hook 'eww-after-render-hook nonce))
+(let ((selected-url (my/get-selected-region-or-prompt)))
+  (eww selected-url)))
+
+(use-package breadcrumb
+  :config (breadcrumb-mode))
