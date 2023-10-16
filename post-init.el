@@ -85,8 +85,7 @@
   ([remap describe-variable] #'helpful-variable)
   ([remap describe-command] #'helpful-command))
 
-(use-package magit
- :custom (magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
+(use-package magit)
 
 (use-package treemacs-magit
   :after (magit treemacs))

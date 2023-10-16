@@ -228,8 +228,7 @@ Magit is the main git client being used
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package magit
-   :custom (magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
+  (use-package magit)
 
 #+END_SRC
 
