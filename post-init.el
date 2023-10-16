@@ -629,3 +629,12 @@
 
 (use-package breadcrumb
   :config (breadcrumb-mode))
+
+(straight-use-package
+ '(openai :type git :host github :repo "emacs-openai/openai"))
+
+(straight-use-package
+ '(chatgpt :type git :host github :repo "emacs-openai/chatgpt"
+            :fork (:host github
+  		       :repo "cwchriswilliams/chatgpt"
+  		       :branch "customised-fork-behaviour")))
