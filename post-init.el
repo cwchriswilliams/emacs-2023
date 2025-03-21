@@ -2,21 +2,23 @@
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
 (setq package-enable-at-startup nil)
 
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
+
+(straight-use-package 'project)
 
 (setq backup-by-copying t)
 (setq backup-directory-alist '(("." . "~/.emacs-backups/")))
@@ -43,8 +45,8 @@
 
   (global-display-line-numbers-mode t)
   (dolist (mode '(term-mode-hook
-		  shell-mode-hook
-		  eshell-mode-hook))
+		    shell-mode-hook
+		    eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0)))))
 
 (use-package gruvbox-theme
@@ -181,6 +183,15 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+(use-package consult
+  :bind
+  (
+   ([remap switch-to-buffer] . consult-buffer)
+   ([remap project-switch-to-buffer] . consult-project-buffer)
+   ([remap imenu] . consult-imenu)
+   )
+  )
+
 (use-package embark
   :general
   ("C-." #'embark-act)
@@ -234,15 +245,15 @@
   :custom (org-inline-anim-loop t)
   :hook (org-mode . org-inline-anim-mode))
 
-(use-package org-roam
-  :config (org-roam-db-autosync-mode))
-
 (use-package emacs
   :config
   (add-hook 'prog-mode-hook
-	    (lambda ()
-	      (add-hook 'before-save-hook 'delete-trailing-whitespace)))
+	      (lambda ()
+		(add-hook 'before-save-hook 'delete-trailing-whitespace)))
   (show-paren-mode 1))
+
+(use-package eglot
+  :custom (eglot-connect-timeout 60))
 
 (use-package flycheck
   :init
@@ -260,15 +271,15 @@
   :config (yas-global-mode 1))
 
 (setq treesit-language-source-alist '((typescript . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "typescript/src"))
-				      (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))
-				      (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" nil "src"))))
+					    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))
+					    (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" nil "src"))))
 
 (use-package docker)
 
 (use-package clojure-mode
   :hook ((clojure-mode . eglot-ensure)
-	 (clojurec-mode . eglot-ensure)
-	 (clojurescript-mode . eglot-ensure))
+	     (clojurec-mode . eglot-ensure)
+	     (clojurescript-mode . eglot-ensure))
   :config (setq eldoc-idle-delay 2))
 
 (use-package clojure-mode-extra-font-locking
@@ -279,8 +290,8 @@
 
 (use-package clj-refactor
   :hook ((clojure-mode . clj-refactor-mode)
-	 (clojurec-mode . clj-refactor-mode)
-	 (clojurescript-mode . clj-refactor-mode))
+	   (clojurec-mode . clj-refactor-mode)
+	   (clojurescript-mode . clj-refactor-mode))
   :config
   (clj-refactor-mode 1)
   (cljr-add-keybindings-with-prefix "M-RET"))
@@ -314,11 +325,11 @@
 (global-set-key (kbd "S-<SPC> p c") '("clear" . portal.api/clear))
 
 (defcustom personal/portal-tap-viewers '(":portal.viewer/inspector"
-					 ":portal.viewer/pprint"
-					 ":portal.viewer/table"
-					 ":portal.viewer/tree"
-					 ":portal.viewer/hiccup"
-					 ":portal.viewer/tree")
+					   ":portal.viewer/pprint"
+					   ":portal.viewer/table"
+					   ":portal.viewer/tree"
+					   ":portal.viewer/hiccup"
+					   ":portal.viewer/tree")
   "List of viewers to be prompted when `C-u M-x personal/cider-tap-last-sexp`")
 
 (defun personal/cider-tap-last-sexp (&optional default-viewer)
@@ -326,14 +337,14 @@
    If invoked with default-viewer, add this as metadata.
   If invoked with a single prefix argument, prompt for the viewer using the values defined in `personal/portal-tap-viewers`"
   (interactive (list (when (consp current-prefix-arg)
-		       (completing-read "Default Viewer: " personal/portal-tap-viewers))))
+			 (completing-read "Default Viewer: " personal/portal-tap-viewers))))
   (cider-interactive-eval
    (if default-viewer
-       (concat "(tap> (vary-meta "
-	       (apply #'buffer-substring-no-properties (cider-last-sexp 'bounds))
-	       " merge {:portal.viewer/default "
-	       default-viewer
-	       "}))")
+	 (concat "(tap> (vary-meta "
+		 (apply #'buffer-substring-no-properties (cider-last-sexp 'bounds))
+		 " merge {:portal.viewer/default "
+		 default-viewer
+		 "}))")
      (concat "(tap> " (apply #'buffer-substring-no-properties (cider-last-sexp 'bounds)) ")"))))
 
 (global-set-key (kbd "C-S-<return>") 'personal/cider-tap-last-sexp)
@@ -349,8 +360,8 @@
 (defun personal/get-namespaced-symbol-for-symbol-dict(symbol-dict)
   "Get the namespaced symbol name from the provided `nrepl-dict`"
   (concat (personal/get-namespace-for-symbol-dict symbol-dict)
-	  "/"
-	  (personal/get-symbol-name-for-symbol-dict symbol-dict)))
+	    "/"
+	    (personal/get-symbol-name-for-symbol-dict symbol-dict)))
 
 (defun personal/get-project-relative-file-path-for-current-file()
   "Get the path to the current file, relative to the project root"
@@ -359,8 +370,8 @@
 (defun personal/get-current-line-in-relative-file-path()
   "Get the path to the current file, relative to the project root followed by the line number"
   (concat (personal/get-project-relative-file-path-for-current-file)
-	  ":"
-	  (number-to-string (current-line))))
+	    ":"
+	    (number-to-string (current-line))))
 
 (defun personal/kill-reference-to-symbol()
    "Kill a reference to the current namespaced symbol."
@@ -385,11 +396,6 @@
 (global-set-key (kbd "S-<SPC> k l") '("kill-reference-to-line" . personal/kill-reference-to-line))
 
 (use-package clj-deps-new)
-
-(use-package aggressive-indent
-  :hook ((clojure-mode . aggressive-indent-mode)
-	 (clojurec-mode . aggressive-indent-mode)
-	 (clojurescript-mode . aggressive-indent-mode)))
 
 (use-package clojure-snippets
   :after yasnippet clojure-mode)
@@ -483,22 +489,22 @@
 (defun uuid-create ()
 "Return a newly generated UUID. This uses a simple hashing of variable data."
 (let ((s (md5 (format "%s%s%s%s%s%s%s%s%s%s"
-		      (user-uid)
-		      (emacs-pid)
-		      (system-name)
-		      (user-full-name)
-		      user-mail-address
-		      (current-time)
-		      (emacs-uptime)
-		      (garbage-collect)
-		      (random)
-		      (recent-keys)))))
+			(user-uid)
+			(emacs-pid)
+			(system-name)
+			(user-full-name)
+			user-mail-address
+			(current-time)
+			(emacs-uptime)
+			(garbage-collect)
+			(random)
+			(recent-keys)))))
   (format "%s-%s-3%s-%s-%s"
-	  (substring s 0 8)
-	  (substring s 8 12)
-	  (substring s 13 16)
-	  (substring s 16 20)
-	  (substring s 20 32))))
+	    (substring s 0 8)
+	    (substring s 8 12)
+	    (substring s 13 16)
+	    (substring s 16 20)
+	    (substring s 20 32))))
 
 (defun uuid-insert ()
 "Inserts a new UUID at the point."
@@ -515,17 +521,17 @@
 (use-package adoc-mode)
 
 (general-def
-  "M-Z" 'zap-up-to-char
-  "M-i" 'imenu)
+	"M-Z" 'zap-up-to-char
+	"M-i" 'imenu)
 
 (setq switch-to-buffer-in-dedicated-window t)
 (add-to-list 'display-buffer-alist
-	     '("\\*.*-?(?repl\\|e?shell)?.*\\*" display-buffer-in-side-window
-	       (side . bottom)
-	       (slot . 0)
-	       (window-height . 0.3)
-	       (window . root)
-	       (dedicated . t)))
+	       '("\\*.*-?(?repl\\|e?shell)?.*\\*" display-buffer-in-side-window
+		 (side . bottom)
+		 (slot . 0)
+		 (window-height . 0.3)
+		 (window . root)
+		 (dedicated . t)))
 
 (use-package restclient)
 
@@ -535,7 +541,7 @@
 (defun my/eshell-git-repo-status ()
 "Return a concise repo status string."
 (string-trim (shell-command-to-string
-  	      "git status --porcelain=v1 | awk 'BEGIN {staged=0; modified=0; untracked=0} /^M/ {modified++} /^M / {staged++} /^??/ {untracked++} END {sep=\"\"; if (staged > 0) {printf \"S\" staged; sep=\"|\"} if (modified > 0) {printf sep \"M\" modified; sep=\"|\"} if (untracked > 0) {printf sep \"U\" untracked} print \"\"}'"))
+		"git status --porcelain=v1 | awk 'BEGIN {staged=0; modified=0; untracked=0} /^M/ {modified++} /^M / {staged++} /^??/ {untracked++} END {sep=\"\"; if (staged > 0) {printf \"S\" staged; sep=\"|\"} if (modified > 0) {printf sep \"M\" modified; sep=\"|\"} if (untracked > 0) {printf sep \"U\" untracked} print \"\"}'"))
 )
 
 (defun my/eshell-git-prompt ()
@@ -589,7 +595,7 @@
 (add-hook 'eshell-before-prompt-hook
           (lambda ()
           (setq xterm-color-preserve-properties t)
-  	(setenv "TERM" "xterm-256color")))
+	    (setenv "TERM" "xterm-256color")))
 
 (defun my/hiragana-conversion ()
 (interactive)
@@ -635,5 +641,83 @@
 (straight-use-package
  '(chatgpt :type git :host github :repo "emacs-openai/chatgpt"
             :fork (:host github
-  		       :repo "cwchriswilliams/chatgpt"
-  		       :branch "customised-fork-behaviour")))
+			 :repo "cwchriswilliams/chatgpt"
+			 :branch "customised-fork-behaviour")))
+
+(straight-use-package
+ '(bhr :type git :host github :repo "elken/bhr.el"))
+
+(use-package crux)
+
+(use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/org/roam/"))
+  (org-roam-dailies-directory "dailies/")
+  :config (org-roam-db-autosync-mode))
+
+(defun org-roam-get-project-dirs ()
+  "Return a list of project directories in the org-roam directory."
+  (let ((root-dir (file-truename org-roam-directory)))
+    (seq-filter
+     (lambda (dir)
+       (and (file-directory-p dir)
+	    (not (member (file-name-nondirectory dir) '("." ".." "dailies")))))
+     (directory-files root-dir t))))
+
+(defun select-project ()
+  (let ((project
+	(completing-read "Choose project: " (mapcar #'file-name-nondirectory (org-roam-get-project-dirs)))))
+    (let ((project-dir (concat (file-name-as-directory org-roam-directory) project)))
+      (message "project-dir %s" project-dir)
+      (unless (file-directory-p (file-truename project-dir))
+	(make-directory (file-truename project-dir) t)) ;; Create directory if it doesn't exist
+      project-dir)))
+
+
+(defun org-roam-new-note-in-project (project)
+  "Create a new org-roam note in a PROJECT.
+  If the project directory does not exist, create it."
+  (interactive
+   (list (completing-read "Choose project: " (mapcar #'file-name-nondirectory (org-roam-get-project-dirs)))))
+  (let ((project-dir (concat (file-name-as-directory org-roam-directory) project)))
+    (message "project-dir %s" project-dir)
+    (unless (file-directory-p (file-truename project-dir))
+      (make-directory (file-truename project-dir) t)) ;; Create directory if it doesn't exist
+    (let ((org-roam-directory project-dir))
+      (org-roam-node-find))))
+
+(defun org-roam-search-in-project (project)
+"Search within notes of a specific PROJECT."
+(interactive
+ (list (completing-read "Choose project: " (org-roam-get-project-dirs))))
+(let ((org-roam-directory (concat "~/org/roam/" project)))
+  (org-roam-node-find)))
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/roam/inbox.org" "Tasks")
+         "* TODO [#B] %?\n  :PROPERTIES:\n  :ROAM_REFS: %^{Reference} \n  :END:\n")
+        ("p" "Project TODO" entry (function org-roam-node-find)
+         "* TODO [#B] %?\n  :PROPERTIES:\n  :ROAM_REFS: %^{Reference} \n  :END:\n")))
+
+
+;; Include Org-roam files in the agenda
+(setq org-agenda-files (directory-files-recursively "~/org/roam/" "\\.org$"))
+
+;; Custom agenda command for TODOs
+(setq org-agenda-custom-commands
+      '(("r" "Review all TODOs"
+         ((agenda "")
+          (alltodo ""
+                   ((org-agenda-files (directory-files-recursively "~/org/roam/" "\\.org$"))
+		    (org-agenda-overriding-header "All TODOs")
+                    (org-agenda-sorting-strategy
+                     '(priority-down timestamp-up))))))))
+
+(use-package org-roam-ui
+  :after org-roam
+  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start nil))

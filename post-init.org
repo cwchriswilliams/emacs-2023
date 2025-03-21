@@ -52,6 +52,13 @@ Install =use-package= which we will use for future packages (Combined with strai
 #+end_src
 
 
+* Issue with projectile/projectel fix
+See [[https://github.com/radian-software/straight.el/issues/1146][github issue]]
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'project)
+#+END_SRC
+
 * General Emacs Setup
 ** Backups
 
@@ -449,6 +456,22 @@ This is useful for tools like Vertico which sort based on this history
 
 #+END_SRC
 
+** Consult
+
+[[https://github.com/minad/consult][consult]] offers async and interactive versions of various emacs commands
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package consult
+    :bind
+    (
+     ([remap switch-to-buffer] . consult-buffer)
+     ([remap project-switch-to-buffer] . consult-project-buffer)
+     ([remap imenu] . consult-imenu)
+     )
+    )
+
+#+END_SRC
 
 ** Embark
 
@@ -575,15 +598,6 @@ For creating reveal.js presentations in org mode
 
 #+END_SRC
 
-** Org-Roam
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package org-roam
-    :config (org-roam-db-autosync-mode))
-
-#+END_SRC
-
 * Programming
 ** General Programming Config
 
@@ -600,6 +614,17 @@ For creating reveal.js presentations in org mode
     (show-paren-mode 1))
 
 #+end_src
+
+** Eglot
+
+- Increase the timeout, because `clojure-lsp` takes too long to load.
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package eglot
+      :custom (eglot-connect-timeout 60))
+
+#+END_SRC
 
 ** Flycheck
 
@@ -872,17 +897,6 @@ Functions that kill the current symbol or line to the kill-ring. These are very 
   (use-package clj-deps-new)
 
 #+END_SRC
-
-*** Aggressive Indent
-
-Aggressively indents code as you type.
-
-#+begin_src emacs-lisp
-  (use-package aggressive-indent
-    :hook ((clojure-mode . aggressive-indent-mode)
-	   (clojurec-mode . aggressive-indent-mode)
-	   (clojurescript-mode . aggressive-indent-mode)))
-#+end_src
 
 *** yasnippet
 
@@ -1422,5 +1436,119 @@ ChatGPT Integration currently uses my fork which adds a couple of features I use
               :fork (:host github
   			 :repo "cwchriswilliams/chatgpt"
   			 :branch "customised-fork-behaviour")))
+
+#+END_SRC
+
+
+* BambooHR
+
+Integration with BambooHR
+
+#+BEGIN_SRC emacs-lisp
+
+  (straight-use-package
+   '(bhr :type git :host github :repo "elken/bhr.el"))
+
+#+END_SRC
+
+* Crux
+
+[[https://github.com/bbatsov/crux][crux]] contains useful emacs utility functions
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package crux)
+
+#+END_SRC
+
+* Org-Roam Setup
+
+** Org-Roam
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-roam
+    :custom
+    (org-roam-directory (file-truename "~/org/roam/"))
+    (org-roam-dailies-directory "dailies/")
+    :config (org-roam-db-autosync-mode))
+
+#+END_SRC
+
+** TODO Org-Roam Projects
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun org-roam-get-project-dirs ()
+    "Return a list of project directories in the org-roam directory."
+    (let ((root-dir (file-truename org-roam-directory)))
+      (seq-filter
+       (lambda (dir)
+         (and (file-directory-p dir)
+  	    (not (member (file-name-nondirectory dir) '("." ".." "dailies")))))
+       (directory-files root-dir t))))
+
+  (defun select-project ()
+    (let ((project
+  	(completing-read "Choose project: " (mapcar #'file-name-nondirectory (org-roam-get-project-dirs)))))
+      (let ((project-dir (concat (file-name-as-directory org-roam-directory) project)))
+        (message "project-dir %s" project-dir)
+        (unless (file-directory-p (file-truename project-dir))
+  	(make-directory (file-truename project-dir) t)) ;; Create directory if it doesn't exist
+        project-dir)))
+
+
+  (defun org-roam-new-note-in-project (project)
+    "Create a new org-roam note in a PROJECT.
+    If the project directory does not exist, create it."
+    (interactive
+     (list (completing-read "Choose project: " (mapcar #'file-name-nondirectory (org-roam-get-project-dirs)))))
+    (let ((project-dir (concat (file-name-as-directory org-roam-directory) project)))
+      (message "project-dir %s" project-dir)
+      (unless (file-directory-p (file-truename project-dir))
+        (make-directory (file-truename project-dir) t)) ;; Create directory if it doesn't exist
+      (let ((org-roam-directory project-dir))
+        (org-roam-node-find))))
+
+  (defun org-roam-search-in-project (project)
+  "Search within notes of a specific PROJECT."
+  (interactive
+   (list (completing-read "Choose project: " (org-roam-get-project-dirs))))
+  (let ((org-roam-directory (concat "~/org/roam/" project)))
+    (org-roam-node-find)))
+
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/roam/inbox.org" "Tasks")
+           "* TODO [#B] %?\n  :PROPERTIES:\n  :ROAM_REFS: %^{Reference} \n  :END:\n")
+          ("p" "Project TODO" entry (function org-roam-node-find)
+           "* TODO [#B] %?\n  :PROPERTIES:\n  :ROAM_REFS: %^{Reference} \n  :END:\n")))
+
+
+  ;; Include Org-roam files in the agenda
+  (setq org-agenda-files (directory-files-recursively "~/org/roam/" "\\.org$"))
+
+  ;; Custom agenda command for TODOs
+  (setq org-agenda-custom-commands
+        '(("r" "Review all TODOs"
+           ((agenda "")
+            (alltodo ""
+                     ((org-agenda-files (directory-files-recursively "~/org/roam/" "\\.org$"))
+  		    (org-agenda-overriding-header "All TODOs")
+                      (org-agenda-sorting-strategy
+                       '(priority-down timestamp-up))))))))
+
+#+END_SRC
+
+* Org-roam UI Enhancements
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam-ui
+    :after org-roam
+    :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start nil))
 
 #+END_SRC
